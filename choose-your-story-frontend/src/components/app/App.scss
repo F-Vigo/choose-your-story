@@ -1,0 +1,35 @@
+@use "reset-css" as *;
+@use "../../const/sass_var" as *;
+
+* {
+    font-family: "Lucida Sans";
+}
+
+#App {
+    background-color: midnightblue;
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+button {
+    border-radius: 10px;
+    border-width: 0px;
+    font-weight: bold;
+    transition: all 150ms linear;
+    padding: 10px;
+    box-shadow: 0px 5px 0px white, 0px -5px 10px rgb(200,200,200) inset;
+}
+
+button:hover {
+    background-color: #daa520;
+    transition: all 150ms linear;
+    box-shadow: 0px 5px 0px #daa520, 0px -5px 10px rgb(168, 115, 0) inset;
+}
+
+button:active {
+    transition: all 50ms linear;
+    background-color: #daa520;
+    box-shadow: 0px 0px 0px #daa520, 0px -5px 10px rgb(168, 115, 0) inset;
+    transform: translateY(5px);
+}

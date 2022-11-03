@@ -1,0 +1,65 @@
+@use "../../../const/sass_var" as *;
+
+#reading_scene_div {
+
+    margin: $margin_medium auto;
+    color: white;
+    background-color: black;
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0px 0px 30px black;
+    animation: toggleIn 1000ms 1;
+
+    
+    * {
+        margin: 10px auto;
+    }
+    
+    > ul {
+        margin-bottom: $margin_medium;
+        color: rgb(100,100,100);
+        animation: toggleIn 500ms 1;
+    }
+
+    h2 {
+        text-align: justify;
+        font-weight: bold;
+        margin-bottom: $margin_medium;
+    }
+}
+
+.reading_option {
+
+    background-color: rgb(0,0,75);
+    margin: $margin_medium auto !important;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 100ms linear;
+
+    label {
+        display: inline-block;
+        width: $margin_medium;
+        top: 0;
+        vertical-align: top;
+    }
+
+    p {
+        display: inline-block;
+        width: calc(100% - $margin_medium);
+    }
+}
+
+.reading_option:hover {
+    background-color: #daa520;
+}
+
+
+@keyframes toggleIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }

@@ -1,0 +1,14 @@
+@use "../../const/sass_var" as *;
+
+
+#main_back {
+    margin: $margin_medium;
+    margin-bottom: 0;
+    transition: opacity 0ms linear;
+}
+
+#main_p {
+    display: inline-block;
+    font-weight: bold;
+    color: white;
+}

@@ -1,0 +1,32 @@
+@use "../../../../const/sass_var" as *;
+
+#mode_selector_div {
+
+    #h1_div {
+        margin: $margin_big;
+        text-align: left;
+    }
+    
+    h1 {
+        color: white;
+        font-size: 128px;
+        width: 800px;
+    }
+    
+    #h1_underline {
+        width: 80%;
+        border-radius: 10px;
+        height: 10px;
+        background-color: white;
+    }
+    
+    #mode_selector_button_div {
+        text-align: center;
+
+        button {
+            margin: $margin_big;
+            padding: 20px;
+            font-size: 18px;
+        }
+    }
+}

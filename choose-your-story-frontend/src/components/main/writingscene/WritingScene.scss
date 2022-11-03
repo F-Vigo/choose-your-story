@@ -1,0 +1,74 @@
+@use "../../../const/sass_var" as *;
+
+#writing_scene_div {
+
+    margin: $margin_medium auto;
+    color: white;
+    background-color: black;
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0px 0px 30px black;
+
+
+    * {
+        margin: 10px auto;
+    }
+
+    > ul {
+        margin-bottom: 30px;
+    }
+
+    > form > div {
+        background-color: rgb(50,50,50);
+        box-shadow: 0px 0px 10px black inset;
+        
+        border-radius: 30px;
+        padding: 20px;
+    }
+
+
+    label {
+        display: block;
+    }
+
+    input, textarea {
+        max-width: 90%;
+        min-width: 90%;
+    }
+
+
+    #writing_scene_optionList_div {
+
+        > #writing_scene_optionList_button_div {
+            border: none
+        }
+        
+        .option_div {
+            
+            border: 1px solid white;
+            padding: 10px;
+            margin: 30px auto;
+            border-radius: 30px;
+
+            > p {
+                text-decoration: underline;
+            }
+        }
+
+        button {
+            padding: 5px 10px;
+            margin: auto 10px;
+        }
+
+        .scene_reference_div {
+            > div {
+                display: inline-block;
+                margin-right: 30px;
+            }
+        }
+    }
+}
+
+#App {
+    padding-bottom: 30px;
+}
