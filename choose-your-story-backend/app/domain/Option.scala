@@ -1,5 +1,6 @@
 package domain
 
-class Option {
-
-}
+case class Option (
+		text: String,
+		sceneReference: SceneReference
+)

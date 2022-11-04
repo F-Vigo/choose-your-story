@@ -1,6 +1,7 @@
+import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Scene, SceneReference } from "../../../domain/domain";
-import { emptyScene, sceneExample, sceneExample2 } from "../../../service/builder";
+import { emptyScene } from "../../../service/builder";
 import "./ReadingScene.scss";
 import { ReadingSceneOption } from "./ReadingSceneOption";
 import { ReadingSceneText } from "./ReadingSceneText";
@@ -17,7 +18,10 @@ export const ReadingScene: FC<ReadingSceneProps> = ({sceneReference, changeScene
 
     useEffect(
         () => {
-            setScene(sceneReference.chapter === 1 ? sceneExample : sceneExample2)
+            axios
+                .get(`http://localhost:9000/scene/${sceneReference.chapter}/${sceneReference.idInChapter}`)
+                .then(response => setScene(response.data))
+
             setTimeout(() => setShouldDisplay(true), 50)
         },
         [sceneReference]

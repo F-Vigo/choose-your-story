@@ -1,3 +1,6 @@
 package domain
 
-case class SceneReference()
+case class SceneReference(
+		chapter: Int,
+		idInChapter: Int
+)

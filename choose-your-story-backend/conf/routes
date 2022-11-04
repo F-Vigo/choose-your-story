@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /last-chapter                    controllers.CYSController.getLastChapter
+GET     /scene-header-list/:chapter      controllers.CYSController.getSceneHeaderList(chapter: Int)
+GET     /scene/:chapter/:idInChapter     controllers.CYSController.getScene(chapter: Int, idInChapter: Int)
+POST    /scene                           controllers.CYSController.postScene
+PUT     /scene                           controllers.CYSController.putScene
+DELETE  /scene/:chapter/:idInChapter     controllers.CYSController.delete(chapter: Int, idInChapter: Int)

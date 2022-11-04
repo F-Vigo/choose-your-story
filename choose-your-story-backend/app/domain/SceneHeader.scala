@@ -1,5 +1,7 @@
 package domain
 
-class SceneHeader {
-
-}
+case class SceneHeader(
+		chapter: Int,
+		idInChapter: Int,
+		title: String
+)

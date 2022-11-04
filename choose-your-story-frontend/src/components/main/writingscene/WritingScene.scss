@@ -67,8 +67,10 @@
             }
         }
     }
-}
 
-#App {
-    padding-bottom: 30px;
+    #delete_button {
+        color: darkred;
+        border: 1px solid darkred;
+        margin-left: $margin_medium;
+    }
 }

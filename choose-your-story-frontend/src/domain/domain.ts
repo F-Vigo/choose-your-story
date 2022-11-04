@@ -42,3 +42,18 @@ export class SceneReference {
     chapter: number
     idInChapter: number
 }
+
+export class SceneHeader {
+    constructor(
+        chapter: number,
+        idInChapter: number,
+        title: string
+    ) {
+        this.chapter = chapter
+        this.idInChapter = idInChapter
+        this.title = title
+    }
+    chapter: number
+    idInChapter: number
+    title: string
+}

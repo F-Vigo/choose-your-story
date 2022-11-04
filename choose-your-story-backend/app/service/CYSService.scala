@@ -27,7 +27,13 @@ class CYSService {
 						.get
 		}
 
-		def postPutScene(scene: Scene) = { // TODO - If chapter is not created
+		def postPutScene(scene: Scene) = {
+
+				val chapterFolder: File = new File(s"story/${scene.chapter}")
+				if (!chapterFolder.exists()) {
+						chapterFolder.mkdir()
+				}
+
 				val file: File = new File(s"story/${scene.chapter}/${scene.idInChapter}")
 				file.createNewFile()
 				val fileWriter: FileWriter = new FileWriter(file)
@@ -46,16 +52,33 @@ class CYSService {
 				fileWriter.close()
 		}
 
-		def putScene(scene: Scene) = {
+		def delete(chapter: Int, idInChapter: Int): Unit = {
 
+				// 1. Delete the scene file.
+				deleteSceneFile(chapter, idInChapter)
+
+				// 2. Check if the chapter ends up empty.
+				val chapterSceneFileList: List[File] = getSceneFileList(chapter)
+				val chapterIsEmpty: Boolean = chapterSceneFileList.isEmpty
+
+				// 3. If the chapter is empty, delete, and update the rest of chapters. Else, update the rest of files within directory
+				if (chapterIsEmpty) {
+						deleteChapter(chapter)
+						updateChaptersAfterDeletion(chapter)
+				} else {
+						chapterSceneFileList.foreach(file => updateIdAfterDeletion(file, idInChapter))
+				}
+
+				// 4. Update the references in the rest of files, as well as the r
+				updateReferencesAndChapters(chapter, idInChapter, chapterIsEmpty)
 		}
-
 
 
 
 		private def getSceneFileList(chapter: Int): List[File] = {
-				return new File(s"story/${chapter}").listFiles().toList
+				return new File(s"story/${chapter}").listFiles().toList.sortBy(file => file.getName.toInt)
 		}
+
 		private def getSceneHeader(file: File): SceneHeader = {
 				val scanner: Scanner = new Scanner(file)
 				val chapter = scanner.nextLine().toInt
@@ -85,11 +108,76 @@ class CYSService {
 						.map(toOption)
 		}
 
-
-		def optionListToText(optionList: List[Option]): String = {
+		private def optionListToText(optionList: List[Option]): String = {
 				val optionToText: Option => String = (option: Option) => s"${option.text} : ${option.sceneReference.chapter} : ${option.sceneReference.idInChapter}"
 				return optionList
 						.map(optionToText)
 						.mkString(" :: ")
+		}
+
+
+		private def deleteSceneFile(chapter: Int, idInChapter: Int): Unit = {
+				val file: File = new File(s"story/${chapter}/${idInChapter}")
+				file.delete()
+		}
+
+		private def updateIdAfterDeletion(file: File, idInChapter: Int): Unit = {
+				val scene: Scene = getSceneFromFile(file)
+				if (idInChapter < scene.idInChapter) {
+						file.delete()
+						val newScene: Scene = new Scene(scene.chapter, scene.idInChapter - 1, scene.title, scene.text, scene.optionList)
+						postPutScene(scene)
+				}
+		}
+
+		private def deleteChapter(chapter: Int): Unit = {
+				val chapterFolder: File = new File(s"story/${chapter}")
+				chapterFolder.delete()
+		}
+
+		private def updateChaptersAfterDeletion(chapter: Int): Unit = {
+				val chapterFolderList = new File("story").listFiles().toList
+				chapterFolderList.foreach(chapterFolder => {
+						val name: String = chapterFolder.getName
+						if (chapter < name.toInt) {
+								val newName: String = (name.toInt - 1).toString
+								chapterFolder.renameTo(new File(s"story/${newName}"))
+						}
+				})
+		}
+
+		private def updateReferencesAndChapters(chapter: Int, idInChapter: Int, chapterIsEmpty: Boolean): Unit = {
+
+				val updateReferencesAndChaptersAux: File => Unit = (chapterFolder: File) => {
+						val updateReferencesAndChaptersScene: File => Unit = (sceneFile: File) => {
+
+								val scene: Scene = getSceneFromFile(sceneFile)
+
+								val updateReference: SceneReference => SceneReference = (sceneReference: SceneReference) => {
+										if (chapterIsEmpty) {
+												val newChapter = if (chapter <= sceneReference.chapter) sceneReference.chapter - 1 else sceneReference.chapter
+												val newId = if (chapter == sceneReference.chapter - 1 && idInChapter <= sceneReference.idInChapter) sceneReference.idInChapter - 1 else sceneReference.idInChapter
+												new SceneReference(newChapter, sceneReference.idInChapter)
+										} else {
+												val newId = if (chapter == sceneReference.chapter && idInChapter <= sceneReference.idInChapter) sceneReference.idInChapter - 1 else sceneReference.idInChapter
+												new SceneReference(sceneReference.chapter, newId)
+										}
+								}
+
+								val newChapter: Int = {
+										if (chapterIsEmpty && chapter <= scene.chapter) {
+												scene.chapter - 1
+										} else {
+												scene.chapter
+										}
+								}
+
+								val newOptionList: List[Option] = scene.optionList.map(option => new Option(option.text, updateReference(option.sceneReference)))
+
+								val newScene: Scene = new Scene(newChapter, scene.idInChapter, scene.title, scene.text, newOptionList)
+						}
+				}
+
+				(new File("story")).listFiles().toList.foreach(updateReferencesAndChaptersAux)
 		}
 }

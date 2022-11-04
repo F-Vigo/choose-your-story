@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+import axios from "axios";
+import { FC, useEffect, useState } from "react";
 import { Mode } from "../../../../const/const"
 import "./ChapterSelector.scss"
 
@@ -9,8 +10,15 @@ interface ChapterSelectorProps {
 
 export const ChapterSelector: FC<ChapterSelectorProps> = ({mode, changeChapter}) => {
 
-  const [lastChapter, setLastChapter] = useState<number>(18) // Temporary
+  const [lastChapter, setLastChapter] = useState<number>(0) // Temporary
   const [newPressed, setNewPressed] = useState<boolean>(false)
+
+  useEffect(
+    () => {axios
+    .get("http://localhost:9000/last-chapter")
+    .then(response => setLastChapter(response.data))},
+    []
+  )
 
   const addChapter = (): void => {
     if (!newPressed) {
@@ -23,7 +31,7 @@ export const ChapterSelector: FC<ChapterSelectorProps> = ({mode, changeChapter})
       <>
       <h2> Capítulo </h2>
         <ol id="chapter_selector_ol">
-          {Array.from(Array(lastChapter).keys()).map(i => <li key={i} onClick={() => changeChapter(i)}>{/* Temporary */1+i}</li>)}
+          {Array.from(Array(lastChapter).keys()).map(i => <li key={i+1} onClick={() => changeChapter(i+1)}>{i+1}</li>)}
        </ol>
        {
         (mode === Mode.WRITING)

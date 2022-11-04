@@ -1,7 +1,8 @@
-import { FC, useState } from "react"
+import axios from "axios";
+import { FC, useEffect, useState } from "react"
 import { Mode } from "../../../../const/const";
-import { Scene } from "../../../../domain/domain"
-import { buildEmptySceneWithChapter, emptyScene } from "../../../../service/builder"
+import { SceneHeader } from "../../../../domain/domain"
+import { buildEmptyScene } from "../../../../service/builder"
 import "./SceneSelector.scss";
 
 interface SceneSelectorProps {
@@ -12,13 +13,19 @@ interface SceneSelectorProps {
 
 export const SceneSelector: FC<SceneSelectorProps> = ({mode, chapter, changeScene}) => {
 
-
-    const [sceneList, setSceneList] = useState<Scene[]>([buildEmptySceneWithChapter(0), buildEmptySceneWithChapter(1)]) // Temporary
+    const [sceneHeaderList, setSceneHeaderList] = useState<SceneHeader[]>([])
     const [newPressed, setNewPressed] = useState<boolean>(false)
 
-    const addChapter = (): void => {
+    useEffect(
+        () => {axios
+        .get(`http://localhost:9000/scene-header-list/${chapter}`)
+        .then(response => setSceneHeaderList(response.data))},
+        []
+    )
+
+    const addScene = (): void => {
         if (!newPressed) {
-            setSceneList([...sceneList, emptyScene])
+            setSceneHeaderList([...sceneHeaderList, buildEmptyScene(chapter, sceneHeaderList.length+1)])
             setNewPressed(true)
         }
     }
@@ -27,11 +34,11 @@ export const SceneSelector: FC<SceneSelectorProps> = ({mode, chapter, changeScen
         <>
             <h2> Escena </h2>
             <ol id="scene_selector_ol">
-                {sceneList.map((scene, i) => <li key={i} onClick={() => changeScene(scene.idInChapter)}>{scene.idInChapter}. {scene.title}</li>)}
+                {sceneHeaderList.map((header, i) => <li key={i} onClick={() => changeScene(header.idInChapter)}>{header.idInChapter}. {header.title}</li>)}
             </ol>
             {
                 (mode === Mode.WRITING)
-                    ? <button id="new_scene_button" style={{opacity: newPressed ? "0" : "1"}} onClick={addChapter}> Nuevo </button>
+                    ? <button id="new_scene_button" style={{opacity: newPressed ? "0" : "1"}} onClick={addScene}> Nuevo </button>
                     : <></>
             }
         </>
