@@ -47,6 +47,7 @@ class CYSService {
 				writeLine(scene.idInChapter.toString)
 				writeLine(scene.title)
 				writeLine(scene.text)
+				writeLine("::")
 				writeLine(optionListToText(scene.optionList))
 
 				fileWriter.close()
@@ -88,24 +89,40 @@ class CYSService {
 				return new SceneHeader(chapter, idInChapter, title)
 		}
 
+
 		private def getSceneFromFile(file: File): Scene = {
 				val scanner: Scanner = new Scanner(file)
 				val chapter = scanner.nextLine().toInt
 				val idInChapter = scanner.nextLine().toInt
 				val title = scanner.nextLine()
-				val text = scanner.nextLine()
+				val text = toTextScene(scanner)
 				val optionList = toOptionList(scanner.nextLine())
 				scanner.close()
 				return new Scene(chapter, idInChapter, title, text, optionList)
 		}
+
+		def toTextScene(scanner: Scanner): String = {
+				var result: String = ""
+				var line: String = scanner.nextLine()
+				while(line != "::") {
+						result = result + line + "\n"
+						line = scanner.nextLine()
+				}
+				return result
+		}
+
 
 		private def toOptionList(line: String): List[Option] = {
 				val toOption: String => Option = (subline: String) => {
 						val params: List[String] = subline.split(" : ").toList
 						new Option(params(0), new SceneReference(params(1).toInt, params(2).toInt))
 				}
-				return line.split(" :: ").toList
-						.map(toOption)
+				if (line == "") {
+						return List()
+				} else {
+						return line.split(" :: ").toList
+								.map(toOption)
+				}
 		}
 
 		private def optionListToText(optionList: List[Option]): String = {
@@ -153,17 +170,6 @@ class CYSService {
 
 								val scene: Scene = getSceneFromFile(sceneFile)
 
-								val updateReference: SceneReference => SceneReference = (sceneReference: SceneReference) => {
-										if (chapterIsEmpty) {
-												val newChapter = if (chapter <= sceneReference.chapter) sceneReference.chapter - 1 else sceneReference.chapter
-												val newId = if (chapter == sceneReference.chapter - 1 && idInChapter <= sceneReference.idInChapter) sceneReference.idInChapter - 1 else sceneReference.idInChapter
-												new SceneReference(newChapter, sceneReference.idInChapter)
-										} else {
-												val newId = if (chapter == sceneReference.chapter && idInChapter <= sceneReference.idInChapter) sceneReference.idInChapter - 1 else sceneReference.idInChapter
-												new SceneReference(sceneReference.chapter, newId)
-										}
-								}
-
 								val newChapter: Int = {
 										if (chapterIsEmpty && chapter <= scene.chapter) {
 												scene.chapter - 1
@@ -172,12 +178,49 @@ class CYSService {
 										}
 								}
 
-								val newOptionList: List[Option] = scene.optionList.map(option => new Option(option.text, updateReference(option.sceneReference)))
+								val newOptionList: List[Option] = scene.optionList
+										.map(option => new Option(option.text, updateReference(option.sceneReference, chapterIsEmpty, chapter, idInChapter)))
+										.filter(option => option.sceneReference.idInChapter != 0)
 
 								val newScene: Scene = new Scene(newChapter, scene.idInChapter, scene.title, scene.text, newOptionList)
 						}
+						chapterFolder.listFiles().toList.foreach(updateReferencesAndChaptersScene)
 				}
 
 				(new File("story")).listFiles().toList.foreach(updateReferencesAndChaptersAux)
+		}
+
+		private def updateReference(sceneReference: SceneReference, chapterIsEmpty: Boolean, chapter: Int, idInChapter: Int): SceneReference = {
+
+				if (chapterIsEmpty) {
+						val newChapter = if (chapter <= sceneReference.chapter) sceneReference.chapter - 1 else sceneReference.chapter
+						val newId = if (chapter == sceneReference.chapter - 1) {
+								if (idInChapter < sceneReference.idInChapter) {
+										sceneReference.idInChapter - 1
+								} else if (idInChapter == sceneReference.idInChapter) {
+										0
+								} else {
+										sceneReference.idInChapter
+								}
+						} else {
+								sceneReference.idInChapter
+						}
+						return new SceneReference(newChapter, sceneReference.idInChapter)
+
+				} else {
+						val newId = if (chapter == sceneReference.chapter) {
+								if (idInChapter < sceneReference.idInChapter) {
+										sceneReference.idInChapter - 1
+								} else if (idInChapter == sceneReference.idInChapter) {
+										0
+								} else {
+										sceneReference.idInChapter
+								}
+						} else {
+								sceneReference.idInChapter
+						}
+
+						return new SceneReference(sceneReference.chapter, newId)
+				}
 		}
 }

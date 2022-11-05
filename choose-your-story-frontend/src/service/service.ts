@@ -4,7 +4,7 @@ export const buildSceneFromForm = (): Scene => {
     const chapter: number = +(document.getElementById("chapter_li_span")!.innerHTML)
     const idInChapter: number = +(document.getElementById("id_li_span")!.innerHTML)
     const title: string = (document.getElementById("title_input") as HTMLInputElement)!.value
-    const text: string = document.getElementById("text_input")!.innerHTML
+    const text: string = (document.getElementById("text_input") as HTMLTextAreaElement)!.value.trim()
     const optionList: Option[] = buildOptionListFromForm()
     return new Scene(chapter, idInChapter, title, text, optionList);
 }
@@ -19,7 +19,7 @@ const buildOptionListFromForm = (): Option[] => {
 }
 
 const appendOptionFromForm = (optionList: Option[], i: number) => {
-    const text: string = document.getElementsByClassName("option_text")[i].innerHTML
+    const text: string = (document.getElementsByClassName("option_text")[i] as HTMLInputElement).value.trim()
     const chapter: number = +((document.getElementsByClassName("option_chapter")[i] as HTMLSelectElement).value)
     const idInChapter: number = +((document.getElementsByClassName("option_idInChapter")[i] as HTMLSelectElement).value)
     const option: Option = new Option(text, new SceneReference(chapter, idInChapter))

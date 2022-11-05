@@ -8,9 +8,10 @@ import { buildSceneFromForm, checkSceneIsReady } from "../../../service/service"
 
 interface WriginSceneProps {
     sceneReference: SceneReference
+    restart: () => void
 }
 
-export const WritingScene: FC<WriginSceneProps> = ({sceneReference}) => {
+export const WritingScene: FC<WriginSceneProps> = ({sceneReference, restart}) => {
 
     const [scene, setScene] = useState<Scene>(emptyScene)
 
@@ -27,7 +28,6 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference}) => {
         e.preventDefault()
         if (checkSceneIsReady()) {
             const newScene: Scene = buildSceneFromForm()
-            console.log(newScene)
             axios
                 .post("http://localhost:9000/scene", newScene)
             window.alert("¡Hecho!")
@@ -40,6 +40,7 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference}) => {
             const idInChapter: number = +(document.getElementById("id_li_span")!.innerHTML)
             axios
                 .delete(`http://localhost:9000/scene/${chapter}/${idInChapter}`)
+            restart()
         }
     }
 
@@ -49,7 +50,7 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference}) => {
 
             <ul>
                 <li> Capítulo: <span id="chapter_li_span">{sceneReference.chapter}</span> </li>
-                <li> Índice en el capítulo: <span id="id_li_span">{sceneReference.idInChapter}</span> </li>
+                <li> Sección: <span id="id_li_span">{sceneReference.idInChapter}</span> </li>
             </ul>
 
             <form onSubmit={submit} name="form_name">

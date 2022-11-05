@@ -33,7 +33,7 @@ export const ReadingScene: FC<ReadingSceneProps> = ({sceneReference, changeScene
     
                 <ul>
                     <li> Capítulo: {scene.chapter} </li>
-                    <li> Índice en el capítulo: {scene.idInChapter} </li>
+                    <li> Sección: {scene.idInChapter} </li>
                 </ul>
     
                 <div id="reading_scene_title_div">

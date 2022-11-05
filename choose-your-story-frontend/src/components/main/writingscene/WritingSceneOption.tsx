@@ -27,7 +27,7 @@ export const WritingSceneOption: FC<WritingSceneOptionProps> = ({letter, lastCha
                     .get(`http://localhost:9000/scene-header-list/${selectedChapter}`)
                     .then(response => setLastIdInChapter(response.data.length))
             }
-        }, []
+        }, [option]
     )
 
     const changeSelectedChapter = (event: ChangeEvent<HTMLSelectElement>): void => {
@@ -51,20 +51,18 @@ export const WritingSceneOption: FC<WritingSceneOptionProps> = ({letter, lastCha
             : Array.from(Array(lastIdInChapter).keys())
     }
 
-    console.log(option)
-
     return(
         <div className="option_div">
             <p> Opción {letter} </p>
             <div>
                 <label> Texto de la opción: </label>
-                <textarea className="option_text" defaultValue={option ? option.text : ""}></textarea>
+                <input type="text" className="option_text" defaultValue={option ? option.text : ""}></input>
             </div>
             <div className="scene_reference_div">
                 <p> Dirige a: </p>
                 <div>
                     <label> Capítulo: </label>
-                    <select className="option_chapter" defaultValue={selectedChapter} onChange={changeSelectedChapter}>
+                    <select className="option_chapter" value={selectedChapter} onChange={changeSelectedChapter}>
                         <option>-</option>
                         {
                             Array.from(Array(lastChapter).keys()).map(i => <option key={i+1}>{i+1}</option>)
@@ -72,8 +70,8 @@ export const WritingSceneOption: FC<WritingSceneOptionProps> = ({letter, lastCha
                     </select>
                 </div>
                 <div>
-                    <label> Índice en el capítulo: </label>
-                    <select className="option_idInChapter" defaultValue={selectedIdInChapter} onChange={changeSelectedIdInChapter}>
+                    <label> Sección: </label>
+                    <select className="option_idInChapter" value={selectedIdInChapter} onChange={changeSelectedIdInChapter}>
                         <option>-</option>
                         {
                             getIdInChapterList().map(i => <option key={i+1}>{i+1}</option>)

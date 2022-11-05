@@ -12,7 +12,6 @@ const genericProcessText = (text: string, pre: string, postOpening: string, post
         finalText = finalText + postClosing
     }
 
-    console.log(finalText)
     return finalText
 }
 

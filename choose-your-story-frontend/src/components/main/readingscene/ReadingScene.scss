@@ -26,6 +26,10 @@
         font-weight: bold;
         margin-bottom: $margin_medium;
     }
+
+    > #reading_scene_text_div > p {
+        min-height: 1em;
+    }
 }
 
 .reading_option {

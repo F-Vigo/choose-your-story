@@ -33,13 +33,18 @@ export const Content: FC<ContentProps> = ({mode, chapter, sceneIdInChapter, chan
         changeSceneReference(new SceneReference(sceneReference.chapter, newId))
     }
 
+    const restart = (): void => {
+        changeChapter(0)
+        changeScene(0)
+    }
+
     if (chapter === 0) {
         return(<ChapterSelector mode={Mode.WRITING} changeChapter={changeChapterInReference} />)
     } else if (sceneIdInChapter === 0) {
         return(<SceneSelector mode={Mode.WRITING} chapter={chapter} changeScene={changeSceneInReference} />)
     } else {
         if (mode === Mode.WRITING) {
-            return(<WritingScene sceneReference={sceneReference} />)
+            return(<WritingScene sceneReference={sceneReference} restart={restart} />)
         } else {
             return(<ReadingScene sceneReference={sceneReference} changeSceneReference={changeSceneReference} />)
         }
