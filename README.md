@@ -33,3 +33,4 @@ The user experience can be catogirsed in two modes:
     - For the time being, only one (nameless and anonimous) story can be used.
     - The user language if fixed to Spanish.
     - No special styles like italics is allowed in the texts.
+    - Optimise endpoint calls. At the moment, some error response codes are treated as normal behaviour.
