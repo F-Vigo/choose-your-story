@@ -2,6 +2,7 @@ import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Scene, SceneReference } from "../../../domain/domain";
 import { emptyScene } from "../../../service/builder";
+import { setLoadingMode } from "../../../service/service";
 import "./ReadingScene.scss";
 import { ReadingSceneOption } from "./ReadingSceneOption";
 import { ReadingSceneText } from "./ReadingSceneText";
@@ -18,11 +19,12 @@ export const ReadingScene: FC<ReadingSceneProps> = ({sceneReference, changeScene
 
     useEffect(
         () => {
+            setLoadingMode(true)
             axios
                 .get(`http://localhost:9000/scene/${sceneReference.chapter}/${sceneReference.idInChapter}`)
                 .then(response => setScene(response.data))
 
-            setTimeout(() => setShouldDisplay(true), 50)
+            setTimeout(() => {setShouldDisplay(true); setLoadingMode(false)}, 50)
         },
         [sceneReference]
     )

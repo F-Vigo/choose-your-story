@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react"
 import { Mode } from "../../../../const/const";
 import { SceneHeader } from "../../../../domain/domain"
 import { buildEmptyScene } from "../../../../service/builder"
+import { setLoadingMode } from "../../../../service/service";
 import "./SceneSelector.scss";
 
 interface SceneSelectorProps {
@@ -17,9 +18,12 @@ export const SceneSelector: FC<SceneSelectorProps> = ({mode, chapter, changeScen
     const [newPressed, setNewPressed] = useState<boolean>(false)
 
     useEffect(
-        () => {axios
-        .get(`http://localhost:9000/scene-header-list/${chapter}`)
-        .then(response => setSceneHeaderList(response.data))},
+        () => {
+            setLoadingMode(true)
+            axios
+                .get(`http://localhost:9000/scene-header-list/${chapter}`)
+                .then(response => {setSceneHeaderList(response.data); setLoadingMode(false)})
+            },
         []
     )
 

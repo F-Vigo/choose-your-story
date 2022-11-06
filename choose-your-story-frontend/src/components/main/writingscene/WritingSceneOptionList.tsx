@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import { alphabet } from "../../../const/const";
 import { Option } from "../../../domain/domain";
 import { emptyOption } from "../../../service/builder";
+import { setLoadingMode } from "../../../service/service";
 import { WritingSceneOption } from "./WritingSceneOption";
 
 interface WritingSceneOptionListProps {
@@ -18,9 +19,10 @@ export const WritingSceneOptionList: FC<WritingSceneOptionListProps> = ({optionL
     useEffect(
         () => {
             setOptionCounter(optionList.length)
+            setLoadingMode(true)
             axios
                 .get("http://localhost:9000/last-chapter")
-                .then(response => setLastChapter(response.data))
+                .then(response => {setLastChapter(response.data); setLoadingMode(false)})
         }, [optionList]
     )
 

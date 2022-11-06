@@ -1,6 +1,7 @@
 import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { Mode } from "../../../../const/const"
+import { setLoadingMode } from "../../../../service/service";
 import "./ChapterSelector.scss"
 
 interface ChapterSelectorProps {
@@ -14,9 +15,12 @@ export const ChapterSelector: FC<ChapterSelectorProps> = ({mode, changeChapter})
   const [newPressed, setNewPressed] = useState<boolean>(false)
 
   useEffect(
-    () => {axios
-    .get("http://localhost:9000/last-chapter")
-    .then(response => setLastChapter(response.data))},
+    () => {
+      setLoadingMode(true)
+      axios
+        .get("http://localhost:9000/last-chapter")
+        .then(response => {setLastChapter(response.data); setLoadingMode(false)})
+      },
     []
   )
 

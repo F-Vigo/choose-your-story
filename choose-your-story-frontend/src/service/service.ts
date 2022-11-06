@@ -41,3 +41,8 @@ export const checkSceneIsReady = (): boolean => {
 
     return soFarSoGood
 }
+
+
+export const setLoadingMode = (loading: boolean): void => {
+    document.body.style.cursor = loading ? "wait" : "default"
+}

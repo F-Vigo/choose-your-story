@@ -1,6 +1,7 @@
 import axios from "axios";
 import { FC, useEffect, useState, ChangeEvent } from "react";
 import { Option } from "../../../domain/domain";
+import { setLoadingMode } from "../../../service/service";
 
 
 interface WritingSceneOptionProps {
@@ -23,9 +24,10 @@ export const WritingSceneOption: FC<WritingSceneOptionProps> = ({letter, lastCha
             if (selectedChapter === "-") {
                 setLastIdInChapter(0)
             } else {
+                setLoadingMode(true)
                 axios
                     .get(`http://localhost:9000/scene-header-list/${selectedChapter}`)
-                    .then(response => setLastIdInChapter(response.data.length))
+                    .then(response => {setLastIdInChapter(response.data.length); setLoadingMode(false)})
             }
         }, [option]
     )
@@ -35,9 +37,11 @@ export const WritingSceneOption: FC<WritingSceneOptionProps> = ({letter, lastCha
         if (event.target.value === "-") {
             setLastIdInChapter(0)
         } else {
+            setLoadingMode(true)
             axios
                 .get(`http://localhost:9000/scene-header-list/${event.target.value}`)
                 .then(response => setLastIdInChapter(response.data.length))
+            setLoadingMode(false)
         }
     }
 

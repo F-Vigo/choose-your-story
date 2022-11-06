@@ -4,7 +4,7 @@ import { Scene, SceneReference } from "../../../domain/domain";
 import { emptyScene } from "../../../service/builder";
 import { WritingSceneOptionList } from "./WritingSceneOptionList";
 import "./WritingScene.scss";
-import { buildSceneFromForm, checkSceneIsReady } from "../../../service/service";
+import { buildSceneFromForm, checkSceneIsReady, setLoadingMode } from "../../../service/service";
 
 interface WriginSceneProps {
     sceneReference: SceneReference
@@ -17,9 +17,10 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference, restart}) =>
 
     useEffect(
         () => {
+            setLoadingMode(true)
             axios
                 .get(`http://localhost:9000/scene/${sceneReference.chapter}/${sceneReference.idInChapter}`)
-                .then(response => setScene(response.data))
+                .then(response => {setScene(response.data); setLoadingMode(false)})
         },
         [sceneReference]
     )
@@ -28,8 +29,10 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference, restart}) =>
         e.preventDefault()
         if (checkSceneIsReady()) {
             const newScene: Scene = buildSceneFromForm()
+            setLoadingMode(true)
             axios
                 .post("http://localhost:9000/scene", newScene)
+                .then(response => setLoadingMode(false))
             window.alert("¡Hecho!")
         }
     }
@@ -38,8 +41,10 @@ export const WritingScene: FC<WriginSceneProps> = ({sceneReference, restart}) =>
         if (window.confirm("¿Seguro?")) {
             const chapter: number = +(document.getElementById("chapter_li_span")!.innerHTML)
             const idInChapter: number = +(document.getElementById("id_li_span")!.innerHTML)
+            setLoadingMode(true)
             axios
                 .delete(`http://localhost:9000/scene/${chapter}/${idInChapter}`)
+            setLoadingMode(false)
             restart()
         }
     }
